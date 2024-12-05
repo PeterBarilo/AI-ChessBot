@@ -52,7 +52,7 @@ def play_chess():
                 continue
         else:
             print("\nAI's turn...")
-            failed_moves = []  # Track all illegal moves for this turn
+            failed_moves = []  
             while True:
                 ai_stats["total_moves"] += 1
                 ai_move = get_ai_move(board, failed_moves=failed_moves)
