@@ -1,12 +1,12 @@
 import chess
 from openai import OpenAI
 
-client = OpenAI(api_key="KEY")
+client = OpenAI(api_key="key")
 
 def get_ai_move(board, failed_moves=None):
     fen = board.fen()
     base_prompt = f"""
-    You are a accurate and strong chess engine. The current board position is given in FEN: {fen}.
+    You are an accurate and strong chess engine. The current board position is given in FEN: {fen}.
     Suggest a legal move in standard UCI format (e.g., e2e4, g8f6). Only provide the move.
     """
     if failed_moves:
