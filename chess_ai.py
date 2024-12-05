@@ -3,6 +3,11 @@ from openai import OpenAI
 
 client = OpenAI(api_key="key")
 
+ai_stats = {
+    "total_moves": 0,   
+    "illegal_moves": 0  
+}
+
 def get_ai_move(board, failed_moves=None):
     fen = board.fen()
     base_prompt = f"""
@@ -38,31 +43,42 @@ def play_chess():
 
     while not board.is_game_over():
         if board.turn == chess.WHITE:
-            print("\nYour turn")
-            user_move = input("Enter your move (UCI format, e.g., for e2 to e4 enter e2e4): ")
+            print("\nYour turn!")
+            user_move = input("Enter your move (UCI format, e.g., e2e4): ")
             try:
                 board.push_uci(user_move)
             except ValueError:
-                print("Invalid move!")
+                print("Invalid move! Try again.")
                 continue
         else:
             print("\nAI's turn...")
-            failed_moves = []  
+            failed_moves = []  # Track all illegal moves for this turn
             while True:
+                ai_stats["total_moves"] += 1
                 ai_move = get_ai_move(board, failed_moves=failed_moves)
                 if ai_move and chess.Move.from_uci(ai_move) in board.legal_moves:
                     board.push_uci(ai_move)
                     print(f"AI plays: {ai_move}")
                     break
                 else:
-                    print("AI is considering its options...")
+                    print(f"AI suggested an illegal move: {ai_move}. Asking for another...")
+                    ai_stats["illegal_moves"] += 1
                     if ai_move not in failed_moves:
                         failed_moves.append(ai_move)
 
         print(board)
 
     print("\nGame Over!")
-    print("Result:", board.result())
+    print(f"Result: {board.result()}")
+
+    if ai_stats["total_moves"] > 0:
+        accuracy = ((ai_stats["total_moves"] - ai_stats["illegal_moves"]) / ai_stats["total_moves"]) * 100
+        print("\nAI Performance Stats:")
+        print(f"- Total Moves Suggested: {ai_stats['total_moves']}")
+        print(f"- Illegal Moves Suggested: {ai_stats['illegal_moves']}")
+        print(f"- Accuracy: {accuracy:.2f}%")
+    else:
+        print("\nAI did not make any moves.")
 
 if __name__ == "__main__":
     play_chess()
