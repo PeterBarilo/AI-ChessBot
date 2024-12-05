@@ -44,7 +44,7 @@ def play_chess():
     while not board.is_game_over():
         if board.turn == chess.WHITE:
             print("\nYour turn!")
-            user_move = input("Enter your move (UCI format, e.g., e2e4): ")
+            user_move = input("Enter your move (UCI format, e.g., e2e4 to move from e2 to e4): ")
             try:
                 board.push_uci(user_move)
             except ValueError:
